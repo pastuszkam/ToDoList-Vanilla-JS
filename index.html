@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>To do</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&amp;subset=latin-ext" rel="stylesheet">
+</head>
+<body>
+
+<div id="page">
+
+
+    <div class="toDoList">
+        <div id="stats" class="statsModule">
+            <p>Number of active tasks: <strong><span id="stats__counter"></span></strong></p>
+        </div>
+        <div class="TaskListModule">
+            <ul id="list" class="list"></ul>
+        </div>
+
+        <div class="newTask">
+            <label class="newTaskName">
+                Name:<input type="text" id="newTaskNameInput">
+            </label>
+            <label>
+                Priority:
+                <select id="newTaskPriorityInput">
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">High</option>
+                </select>
+            </label>
+            <button id="newTaskSubmit" class="newTaskSubmit">Dodaj zadanie</button>
+        </div>
+
+        <div id="filtering" class="filteringModule">
+            <button id="displayAllTask">All</button>
+            <button id="displayDoneTask">Done</button>
+            <button id="displayUndoneTask">Undone</button>
+        </div>
+
+
+    </div>
+
+</div>
+
+<script src="js/Template.js"></script>
+<script src="js/Helpers.js"></script>
+<script src="js/PubSub.js"></script>
+<script src="js/Service.js"></script>
+
+<script src="js/Page%20Modules/TasksModule.js"></script>
+<script src="js/Page%20Modules/StatsModule.js"></script>
+<script src="js/Page%20Modules/FilteringModule.js"></script>
+
+</body>
+</html>
