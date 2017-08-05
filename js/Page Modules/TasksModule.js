@@ -66,7 +66,7 @@ var TasksModule = (function () {
 
     function addTask() {
 
-        tasks.push(new Task(newTaskNameInput.value, newTaskPriorityInput.value));
+        tasks.push(new Task(newTaskNameInput.value));
         pubSub.publish('tasksChanged', tasks);
 
     }
