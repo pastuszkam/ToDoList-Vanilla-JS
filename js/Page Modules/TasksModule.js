@@ -27,8 +27,14 @@ var TasksModule = (function () {
         else if (e.target.matches('button.mark')) {
             checkTask(e.target);
         }
-
     });
+
+    list.addEventListener('dblclick', function (e) {
+        if (e.target.matches('span')) {
+            editTask(e.target)
+        }
+    });
+
     pubSub.subscribe('tasksFetched', fetchTasks);
 
     function fetchTasks(newTasks) {
@@ -39,10 +45,12 @@ var TasksModule = (function () {
     }
 
     function render(tasks) {
+
         //clear list
         while (list.firstChild) {
             list.removeChild(list.firstChild);
         }
+
         //create task for every element in tasks array
         tasks.forEach(function (task) {
             createTask(task);
@@ -83,6 +91,30 @@ var TasksModule = (function () {
         selectedTask.isDone = selectedTask.isDone !== true;
 
         pubSub.publish('tasksChanged', tasks);
+    }
+
+    function editTask(clickedElement) {
+
+        var taskName = clickedElement.innerText;
+        var listElementOfTask = clickedElement.parentElement;
+        var index = Array.prototype.indexOf.call(list.children, listElementOfTask);
+        var selectedTask = tasks[index];
+        var taskSpan = clickedElement.parentElement.getElementsByTagName('span');
+
+
+        listElementOfTask.classList.add('editing');
+        var input = document.createElement('input');
+        input.value = taskName;
+        input.classList.add('taskEdit');
+        taskSpan[0].appendChild(input);
+        input.focus();
+
+        input.addEventListener('blur', function(){
+            selectedTask.name = input.value;
+            listElementOfTask.classList.remove('editing');
+            pubSub.publish('tasksChanged', tasks);
+        })
+
     }
 
     function sendTasks() {
