@@ -4,6 +4,9 @@
 
 var FilteringModule = (function () {
 
+    //utilities
+    var getById = helpersModule.getById;
+
     //cache DOM
     var filtering = getById('filtering');
 

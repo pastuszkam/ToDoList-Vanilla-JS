@@ -4,6 +4,9 @@
 
 var StatsModule = (function () {
 
+    //utlities
+    var getById = helpersModule.getById;
+
     //cacheDOM
     var counter = getById('stats__counter');
 

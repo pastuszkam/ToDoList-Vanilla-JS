@@ -1,24 +1,12 @@
 var TasksModule = (function () {
 
-    function Task(name, priority) {
-
-        this.name = name;
-        this.priority = priority;
-        this.isDone = false;
-
-    }
-
-    var tasks = [];
+    //utilities
+    var getById = helpersModule.getById;
 
     //cache DOM
     var list = getById('list');
-    var newTaskNameInput = getById('newTaskNameInput');
-    var newTaskPriorityInput = getById('newTaskPriorityInput');
-    var newTaskSubmit = getById('newTaskSubmit');
-
 
     //bind events
-    newTaskSubmit.addEventListener('click', addTask, false);
     list.addEventListener('click', function (e) {
 
         if (e.target.matches('button.del')) {
@@ -27,15 +15,20 @@ var TasksModule = (function () {
         else if (e.target.matches('button.mark')) {
             checkTask(e.target);
         }
+
     });
 
     list.addEventListener('dblclick', function (e) {
+
         if (e.target.matches('span')) {
             editTask(e.target)
         }
+
     });
 
     pubSub.subscribe('tasksFetched', fetchTasks);
+
+    var tasks = [];
 
     function fetchTasks(newTasks) {
 
@@ -51,25 +44,19 @@ var TasksModule = (function () {
             list.removeChild(list.firstChild);
         }
 
-        //create task for every element in tasks array
-        tasks.forEach(function (task) {
-            createTask(task);
+        //sorting tasks
+        sortedTask = tasks.sort(function(a,b){
+            return (a.isDone === b.isDone)? 0 : b.isDone? -1 : 1;
         });
-    }
 
-    function createTask(task) {
-
-        var newTask = new TaskTemplate().createNewTask(task);
-        list.innerHTML = list.innerHTML + newTask;
-
-    }
-
-    function addTask() {
-
-        tasks.push(new Task(newTaskNameInput.value));
-        pubSub.publish('tasksChanged', tasks);
+        //create task for every element in tasks array
+        sortedTask.forEach(function (task) {
+            var newTask = new TemplateModule.TaskTemplate().createNewTask(task);
+            list.innerHTML = list.innerHTML + newTask;
+        });
 
     }
+
 
     function removeTask(clickedElement) {
 
@@ -91,40 +78,65 @@ var TasksModule = (function () {
         selectedTask.isDone = selectedTask.isDone !== true;
 
         pubSub.publish('tasksChanged', tasks);
+
     }
 
     function editTask(clickedElement) {
 
         var taskName = clickedElement.innerText;
-        var listElementOfTask = clickedElement.parentElement;
-        var index = Array.prototype.indexOf.call(list.children, listElementOfTask);
+        var inputParent = clickedElement.parentElement;
+        var index = Array.prototype.indexOf.call(list.children, inputParent);
         var selectedTask = tasks[index];
         var taskSpan = clickedElement.parentElement.getElementsByTagName('span');
 
 
-        listElementOfTask.classList.add('editing');
+        inputParent.classList.add('editing');
         var input = document.createElement('input');
         input.value = taskName;
         input.classList.add('taskEdit');
         taskSpan[0].appendChild(input);
         input.focus();
 
-        input.addEventListener('blur', function(){
-            selectedTask.name = input.value;
-            listElementOfTask.classList.remove('editing');
-            pubSub.publish('tasksChanged', tasks);
-        })
+
+        input.addEventListener('keydown', function(e){
+
+            if (e.keyCode === 13) {
+                saveEditingTask(input, selectedTask, inputParent);
+            }
+            else if(e.keyCode === 27) {
+                cancelEditingTask(input, inputParent);
+            }
+        });
+
+    }
+
+    function saveEditingTask(input, selectedTask, inputParent){
+
+        selectedTask.name = input.value;
+        inputParent.classList.remove('editing');
+        pubSub.publish('tasksChanged', tasks);
+
+    }
+
+    function cancelEditingTask(input, inputParent){
+
+        inputParent.getElementsByTagName('span')[0].removeChild(input);
+        inputParent.classList.remove('editing');
 
     }
 
     function sendTasks() {
+
         return tasks;
+
     }
 
     //public API
     return {
+
         render: render,
         sendTasks: sendTasks
+
     }
 
 })();

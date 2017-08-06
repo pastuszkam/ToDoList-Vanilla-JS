@@ -2,19 +2,19 @@
  * Created by Maciek on 8/3/2017.
  */
 
-(function (window) {
+var TemplateModule = (function () {
 
     function TaskTemplate() {
 
         this.defaultTemplate
             = '<li class="{{taskDone}}">'
-            +   '<button class="mark"></button>'
-            +   '<span>{{taskName}}</span>'
-            +   '<button class="del"></button>'
+            + '<button class="mark"></button>'
+            + '<span>{{taskName}}</span>'
+            + '<button class="del"></button>'
 
     }
 
-    TaskTemplate.prototype.createNewTask = function(task) {
+    TaskTemplate.prototype.createNewTask = function (task) {
 
         var template = this.defaultTemplate;
 
@@ -31,6 +31,11 @@
 
     };
 
-    window.TaskTemplate = TaskTemplate;
+    return {
+        TaskTemplate: TaskTemplate
+    }
 
-})(window);
+})();
+
+
+
