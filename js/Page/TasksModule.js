@@ -75,10 +75,12 @@ var TasksModule = (function () {
         var selectedTask = tasks[index];
 
         //Toggle 'check'
+        listElementOfTask.classList.toggle('done');
+        listElementOfTask.classList.toggle('undone');
         selectedTask.isDone = selectedTask.isDone !== true;
 
         pubSub.publish('tasksChanged', tasks);
-
+        
     }
 
     function editTask(clickedElement) {
